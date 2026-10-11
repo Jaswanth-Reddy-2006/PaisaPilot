@@ -73,7 +73,7 @@ export function calculateReservedCommitments(
 export function calculateSpendableBalance(
   currentCash: number,
   reservedCommitments: number,
-  _savingsGoals: SavingsGoal[]
+  _savingsGoals: SavingsGoal[] = []
 ): number {
   return Math.max(0, currentCash - reservedCommitments);
 }
@@ -423,6 +423,9 @@ export function simulateDecision(
     category: TransactionCategory;
     isRecurring?: boolean;
     day?: number;
+    id?: string;
+    appliedAt?: string;
+    isApplied?: boolean;
   }
 ): SimulationPreview {
   const currentMetrics = calculateMetrics(state);

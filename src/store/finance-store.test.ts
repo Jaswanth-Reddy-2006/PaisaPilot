@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { useFinanceStore } from './finance-store';
-import { rupeesToPaise } from '@/lib/finance/calculations';
+import { rupeesToPaise, simulateDecision } from '@/lib/finance/calculations';
 
 describe('Finance Store State Management', () => {
   beforeEach(() => {
@@ -138,5 +138,49 @@ describe('Finance Store State Management', () => {
     const reset = useFinanceStore.getState();
     expect(reset.currentDay).toBe(8);
     expect(reset.decisions).toHaveLength(0);
+  });
+
+  it('should preserve state isolation when simulating decisions before applying', () => {
+    const stateBefore = { ...useFinanceStore.getState() };
+    const preview = simulateDecision(stateBefore, {
+      type: 'emergency',
+      amount: rupeesToPaise(1500),
+      description: 'Unexpected Dental Bill',
+      category: 'health',
+    });
+
+    // Preview returned expected simulated deltas
+    expect(preview.deltas.balance).toBe(-rupeesToPaise(1500));
+
+    // Store state must remain 100% untouched
+    const stateAfter = useFinanceStore.getState();
+    expect(stateAfter.currentCash).toBe(stateBefore.currentCash);
+    expect(stateAfter.totalSpent).toBe(stateBefore.totalSpent);
+    expect(stateAfter.decisions).toHaveLength(stateBefore.decisions.length);
+  });
+
+  it('should strictly isolate savings transfers from income and discretionary spend', () => {
+    const goal = useFinanceStore.getState().savingsGoals[0];
+    const initialCash = useFinanceStore.getState().currentCash;
+    const initialSpent = useFinanceStore.getState().totalSpent;
+    const initialIncome = useFinanceStore.getState().totalIncome;
+    const transferAmount = rupeesToPaise(400);
+
+    useFinanceStore.getState().contributeToGoal(goal.id, transferAmount);
+
+    const updated = useFinanceStore.getState();
+    expect(updated.currentCash).toBe(initialCash - transferAmount);
+    // Discretionary spent and total income must NOT increase from savings vault transfers
+    expect(updated.totalSpent).toBe(initialSpent);
+    expect(updated.totalIncome).toBe(initialIncome);
+    expect(updated.savingsGoals[0].currentAmount).toBe(goal.currentAmount + transferAmount);
+  });
+
+  it('should handle Day 30 boundary condition safely with zero division protection', () => {
+    useFinanceStore.getState().setCurrentDay(30);
+    const metrics = useFinanceStore.getState().getMetrics();
+    expect(metrics.daysRemaining).toBe(0);
+    expect(metrics.safeDailyAllowance).toBe(0);
+    expect(Number.isFinite(metrics.safeDailyAllowance)).toBe(true);
   });
 });

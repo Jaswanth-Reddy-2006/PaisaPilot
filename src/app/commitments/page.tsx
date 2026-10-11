@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useFinanceStore } from '@/store/finance-store';
 import { formatINR, rupeesToPaise } from '@/lib/finance/calculations';
 import { sanitizeText } from '@/lib/validation/sanitize';
@@ -25,6 +25,20 @@ export default function CommitmentsPage() {
   const [activeTab, setActiveTab] = useState<'commitments' | 'subscriptions'>('commitments');
   const [showAddCommitment, setShowAddCommitment] = useState(false);
   const [showAddSub, setShowAddSub] = useState(false);
+
+  // Keyboard navigation: Escape key dismisses modals
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setShowAddCommitment(false);
+        setShowAddSub(false);
+      }
+    };
+    if (showAddCommitment || showAddSub) {
+      window.addEventListener('keydown', handleKeyDown);
+      return () => window.removeEventListener('keydown', handleKeyDown);
+    }
+  }, [showAddCommitment, showAddSub]);
 
   const [commitForm, setCommitForm] = useState({
     name: '',
@@ -292,14 +306,15 @@ export default function CommitmentsPage() {
           className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in"
           role="dialog"
           aria-modal="true"
+          aria-labelledby="add-bill-title"
         >
           <div className="bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl border border-[#E5E8E3] space-y-4">
             <div className="flex items-center justify-between pb-2 border-b border-[#F0F2EE]">
               <div>
-                <h3 className="text-base font-bold text-[#14251F]">Add Scheduled Bill</h3>
+                <h3 id="add-bill-title" className="text-base font-bold text-[#14251F]">Add Scheduled Bill</h3>
                 <p className="text-xs text-[#7B827E]">Reserved from spendable balance automatically</p>
               </div>
-              <button onClick={() => setShowAddCommitment(false)} className="p-1 rounded-full text-[#7B827E] hover:bg-[#F4F5F3]">
+              <button onClick={() => setShowAddCommitment(false)} aria-label="Close add bill dialog" className="p-1 rounded-full text-[#7B827E] hover:bg-[#F4F5F3]">
                 <XCircle className="w-5 h-5" />
               </button>
             </div>
@@ -383,14 +398,15 @@ export default function CommitmentsPage() {
           className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in"
           role="dialog"
           aria-modal="true"
+          aria-labelledby="add-sub-title"
         >
           <div className="bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl border border-[#E5E8E3] space-y-4">
             <div className="flex items-center justify-between pb-2 border-b border-[#F0F2EE]">
               <div>
-                <h3 className="text-base font-bold text-[#14251F]">Add Subscription</h3>
+                <h3 id="add-sub-title" className="text-base font-bold text-[#14251F]">Add Subscription</h3>
                 <p className="text-xs text-[#7B827E]">Recurring monthly digital services</p>
               </div>
-              <button onClick={() => setShowAddSub(false)} className="p-1 rounded-full text-[#7B827E] hover:bg-[#F4F5F3]">
+              <button onClick={() => setShowAddSub(false)} aria-label="Close add subscription dialog" className="p-1 rounded-full text-[#7B827E] hover:bg-[#F4F5F3]">
                 <XCircle className="w-5 h-5" />
               </button>
             </div>

@@ -36,6 +36,19 @@ export function Navbar() {
   const [searchQuery, setSearchQuery] = useState('');
   const [showResetConfirm, setShowResetConfirm] = useState(false);
 
+  // Keyboard navigation: Escape key dismisses modal
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setShowResetConfirm(false);
+      }
+    };
+    if (showResetConfirm) {
+      window.addEventListener('keydown', handleKeyDown);
+      return () => window.removeEventListener('keydown', handleKeyDown);
+    }
+  }, [showResetConfirm]);
+
   const daysRemaining = Math.max(0, totalDays - currentDay);
 
   return (
@@ -154,13 +167,14 @@ export function Navbar() {
           className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in"
           role="dialog"
           aria-modal="true"
+          aria-labelledby="reset-modal-title"
         >
           <div className="bg-white dark:bg-[#0E120F] rounded-3xl p-6 max-w-sm w-full shadow-2xl border border-[#E5E8E3] space-y-4">
             <div className="w-10 h-10 rounded-2xl bg-[#FFF4D9] text-[#C28A24] flex items-center justify-center mx-auto">
               <RotateCcw className="w-5 h-5" />
             </div>
             <div className="text-center">
-              <h3 className="text-base font-bold text-[#14251F]">Reset Simulation to Day 8?</h3>
+              <h3 id="reset-modal-title" className="text-base font-bold text-[#14251F]">Reset Simulation to Day 8?</h3>
               <p className="text-xs text-[#7B827E] mt-1.5 leading-relaxed">
                 This will restore all default transactions, bills, savings goals, and ₹10,000 budget metrics.
               </p>

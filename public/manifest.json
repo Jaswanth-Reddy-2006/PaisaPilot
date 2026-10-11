@@ -1,0 +1,16 @@
+{
+  "name": "PaisaPilot — Broke But Functional",
+  "short_name": "PaisaPilot",
+  "description": "Your ₹10,000. Your next 30 days. Your decisions. Gen Z personal finance decision simulator.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#E8E8E6",
+  "theme_color": "#073B2F",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

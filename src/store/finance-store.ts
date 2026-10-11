@@ -172,7 +172,7 @@ export const useFinanceStore = create<FinanceStore>()(
           ),
           transactions,
           currentCash: state.currentCash - amount,
-          totalSpent: amount > 0 ? state.totalSpent + amount : state.totalSpent,
+          totalSpent: state.totalSpent,
           totalIncome: state.totalIncome,
         };
       }),

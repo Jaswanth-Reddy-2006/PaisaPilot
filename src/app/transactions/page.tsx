@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useFinanceStore } from '@/store/finance-store';
 import { formatINR, rupeesToPaise } from '@/lib/finance/calculations';
 import { sanitizeText } from '@/lib/validation/sanitize';
@@ -27,6 +27,20 @@ export default function TransactionsPage() {
   const [filterType, setFilterType] = useState('all');
   const [search, setSearch] = useState('');
   const [showAdd, setShowAdd] = useState(false);
+
+  // Keyboard navigation: Escape key dismisses modal
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setShowAdd(false);
+      }
+    };
+    if (showAdd) {
+      window.addEventListener('keydown', handleKeyDown);
+      return () => window.removeEventListener('keydown', handleKeyDown);
+    }
+  }, [showAdd]);
+
   const [form, setForm] = useState({
     type: 'expense' as TransactionType,
     category: 'food' as TransactionCategory,
@@ -249,15 +263,17 @@ export default function TransactionsPage() {
           className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in"
           role="dialog"
           aria-modal="true"
+          aria-labelledby="record-tx-title"
         >
           <div className="bg-white dark:bg-[#0C1220] rounded-3xl p-6 max-w-md w-full shadow-2xl border border-[#E5E8E3] space-y-4">
             <div className="flex items-center justify-between pb-2 border-b border-[#F0F2EE]">
               <div>
-                <h3 className="text-base font-bold text-[#14251F]">Record Transaction</h3>
+                <h3 id="record-tx-title" className="text-base font-bold text-[#14251F]">Record Transaction</h3>
                 <p className="text-xs text-[#7B827E]">Sanitized entry added to 30-day simulation</p>
               </div>
               <button
                 onClick={() => setShowAdd(false)}
+                aria-label="Close record transaction dialog"
                 className="p-1 rounded-full text-[#7B827E] hover:bg-[#F4F5F3]"
               >
                 <XCircle className="w-5 h-5" />

@@ -51,7 +51,7 @@ interface DecisionTypeMeta {
 const DECISION_TYPES: DecisionTypeMeta[] = [
   { value: 'purchase', label: 'One-time Purchase', icon: ShoppingBag },
   { value: 'subscription', label: 'New Subscription', icon: Tv },
-  { value: 'emergency', label: 'Emergency Expense', icon: HeartPulse },
+  { value: 'emergency', label: 'Unexpected Expense / Emergency', icon: HeartPulse },
   { value: 'income', label: 'Extra Income', icon: ArrowDownLeft },
   { value: 'savings', label: 'Savings Contribution', icon: PiggyBank },
   { value: 'bill', label: 'Add / Pay Bill', icon: FileText },
@@ -69,6 +69,16 @@ const PRESETS = [
     icon: ShoppingBag,
   },
   {
+    title: 'Simulate Unexpected Expense',
+    type: 'emergency' as DecisionType,
+    amount: '1200',
+    category: 'transport' as TransactionCategory,
+    description: 'Unexpected Vehicle Breakdown Repair',
+    isRecurring: false,
+    badge: 'Unexpected',
+    icon: AlertTriangle,
+  },
+  {
     title: 'Add ₹499 OTT Subscription',
     type: 'subscription' as DecisionType,
     amount: '499',
@@ -79,7 +89,7 @@ const PRESETS = [
     icon: Tv,
   },
   {
-    title: 'Handle ₹1,500 Emergency',
+    title: 'Handle ₹1,500 Medical Emergency',
     type: 'emergency' as DecisionType,
     amount: '1500',
     category: 'health' as TransactionCategory,

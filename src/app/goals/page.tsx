@@ -248,16 +248,17 @@ export default function GoalsPage() {
           className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in"
           role="dialog"
           aria-modal="true"
+          aria-labelledby="transfer-modal-title"
         >
           <div className="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl border border-[#E5E8E3] space-y-4">
             <div className="flex items-center justify-between pb-2 border-b border-[#F0F2EE]">
               <div>
-                <h3 className="text-base font-bold text-[#14251F]">
+                <h3 id="transfer-modal-title" className="text-base font-bold text-[#14251F]">
                   {modalMode === 'contribute' ? 'Deposit to Goal' : 'Withdraw to Cash'}
                 </h3>
                 <p className="text-xs text-[#7B827E]">{activeGoal.name}</p>
               </div>
-              <button onClick={() => setModalGoalId(null)} className="p-1 rounded-full text-[#7B827E] hover:bg-[#F4F5F3]">
+              <button onClick={() => setModalGoalId(null)} aria-label="Close transfer modal" className="p-1 rounded-full text-[#7B827E] hover:bg-[#F4F5F3]">
                 <XCircle className="w-5 h-5" />
               </button>
             </div>
@@ -304,14 +305,15 @@ export default function GoalsPage() {
           className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in"
           role="dialog"
           aria-modal="true"
+          aria-labelledby="create-goal-title"
         >
           <div className="bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl border border-[#E5E8E3] space-y-4">
             <div className="flex items-center justify-between pb-2 border-b border-[#F0F2EE]">
               <div>
-                <h3 className="text-base font-bold text-[#14251F]">Create Savings Goal</h3>
+                <h3 id="create-goal-title" className="text-base font-bold text-[#14251F]">Create Savings Goal</h3>
                 <p className="text-xs text-[#7B827E]">Targeted vault with required daily pacing</p>
               </div>
-              <button onClick={() => setShowAdd(false)} className="p-1 rounded-full text-[#7B827E] hover:bg-[#F4F5F3]">
+              <button onClick={() => setShowAdd(false)} aria-label="Close create goal dialog" className="p-1 rounded-full text-[#7B827E] hover:bg-[#F4F5F3]">
                 <XCircle className="w-5 h-5" />
               </button>
             </div>

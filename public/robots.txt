@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://paisapilot-frontend.vercel.app/sitemap.xml
