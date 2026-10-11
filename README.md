@@ -1,7 +1,7 @@
 # PaisaPilot
 > **Your ₹10,000. Your next 30 days. Your decisions.**
 
-[![Next.js 15](https://img.shields.io/badge/Next.js-15.3.3-black?style=flat&logo=next.js)](https://nextjs.org/)
+[![Next.js 15](https://img.shields.io/badge/Next.js-15.3.9-black?style=flat&logo=next.js)](https://nextjs.org/)
 [![React 19](https://img.shields.io/badge/React-19.0.0-blue?style=flat&logo=react)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=flat&logo=typescript)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-38bdf8?style=flat&logo=tailwind-css)](https://tailwindcss.com/)
