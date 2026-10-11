@@ -7,7 +7,7 @@
 [![React 19](https://img.shields.io/badge/React-19.0.0-blue?style=flat&logo=react)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=flat&logo=typescript)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-38bdf8?style=flat&logo=tailwind-css)](https://tailwindcss.com/)
-[![Vitest](https://img.shields.io/badge/Vitest-85%20Passed-green?style=flat&logo=vitest)](https://vitest.dev/)
+[![Vitest](https://img.shields.io/badge/Vitest-85%20Tests%20Passing-green?style=flat&logo=vitest)](https://vitest.dev/)
 [![ESLint](https://img.shields.io/badge/ESLint-0%20Warnings-brightgreen?style=flat&logo=eslint)](https://eslint.org/)
 [![Accessibility](https://img.shields.io/badge/WCAG-2.1%20AA-success?style=flat)](https://www.w3.org/WAI/standards-guidelines/wcag/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -48,7 +48,7 @@ PaisaPilot was engineered from the ground up to excel across all six core hackat
 │ 1. Code Quality & Architecture │ Pure TS engine, integer math, Zustand │
 │ 2. Security & Sanitization     │ OWASP XSS scrub, Zod, Security Headers│
 │ 3. Runtime & Core Web Vitals   │ 100% static prerendering, CLS = 0     │
-│ 4. Testing & Reliability       │ 73 Vitest tests, 0 ESLint warnings    │
+│ 4. Testing & Reliability       │ 85 Vitest tests, 0 ESLint warnings    │
 │ 5. Accessibility (ARIA/Nav)    │ Keyboard nav, WCAG 2.1 AA, 0 emojis   │
 │ 6. Specification Alignment     │ ₹10k budget, Day 1-30, delta preview  │
 └────────────────────────────────┴───────────────────────────────────────┘
@@ -184,8 +184,8 @@ npx tsc --noEmit
 # Run ESLint linter check (0 warnings, 0 errors)
 npm run lint
 
-# Run automated test suites (73 passing tests)
-npx vitest run
+# Run automated test suites (85 passing tests)
+npm test
 
 # Run production build
 npm run build

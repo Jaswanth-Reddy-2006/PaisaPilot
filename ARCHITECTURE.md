@@ -82,7 +82,7 @@ PaisaPilot/
 │   │   └── utils.ts              # Tailwind merge & clsx utility
 │   ├── store/
 │   │   ├── finance-store.ts      # Zustand root store with JSON local persistence
-│   │   └── finance-store.test.ts # State transitions & non-mutating tests (8 tests)
+│   │   └── finance-store.test.ts # State transitions & non-mutating tests (11 tests)
 │   └── types/
 │       └── finance.ts            # Complete domain TypeScript types & interfaces
 ├── ARCHITECTURE.md               # Technical architecture & design documentation
