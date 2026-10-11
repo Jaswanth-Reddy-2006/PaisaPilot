@@ -48,7 +48,7 @@ PaisaPilot was engineered from the ground up to excel across all six core hackat
 │ 1. Code Quality & Architecture │ Pure TS engine, integer math, Zustand │
 │ 2. Security & Sanitization     │ OWASP XSS scrub, Zod, Security Headers│
 │ 3. Runtime & Core Web Vitals   │ 100% static prerendering, CLS = 0     │
-│ 4. Testing & Reliability       │ 73 Vitest tests, 0 ESLint warnings    │
+│ 4. Testing & Reliability       │ 85 Vitest tests, 0 ESLint warnings    │
 │ 5. Accessibility (ARIA/Nav)    │ Keyboard nav, WCAG 2.1 AA, 0 emojis   │
 │ 6. Specification Alignment     │ ₹10k budget, Day 1-30, delta preview  │
 └────────────────────────────────┴───────────────────────────────────────┘
@@ -61,7 +61,7 @@ PaisaPilot was engineered from the ground up to excel across all six core hackat
 - **Strict Typing**: 100% TypeScript strict mode (`tsc --noEmit` exits with 0 errors) with comprehensive types (`src/types/finance.ts`) and zero `any` types.
 
 ### 2. Security & Data Sanitization
-- **HTTP Security Headers**: Configured in `next.config.mjs` (`X-Frame-Options: SAMEORIGIN`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, `Strict-Transport-Security`, `Permissions-Policy`).
+- **HTTP Security Headers**: Configured in `next.config.mjs` (`X-Frame-Options: SAMEORIGIN`, `Strict-Transport-Security`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy`, `X-DNS-Prefetch-Control`).
 - **Multi-Layer Input Sanitization**: Text inputs are scrubbed with `sanitizeText()` (`src/lib/validation/sanitize.ts`), stripping HTML/script angle brackets and bounding character length (150 chars).
 - **Numeric Overflow Protection**: Numerical inputs are clamped via `sanitizeNumber()` between safe boundaries (₹1 to ₹1,000,000) to prevent buffer overflows or NaN propagation.
 - **Zod Runtime Validation**: Schemas (`src/lib/validation/schemas.ts`) validate transactions, decisions, commitments, and goals at runtime before state ingestion.
@@ -132,6 +132,133 @@ PaisaPilot includes integrated support for **Agentation** (`agentation@3.1.2`):
 
 ---
 
+## Clean Architecture & Data Flow
+
+PaisaPilot enforces strict unidirectional data flow. The business domain engine is completely decoupled from React and Next.js view layers:
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                        PAISAPILOT DATA FLOW                            │
+└────────────────────────────────────────────────────────────────────────┘
+                                    │
+           User Action / Simulation Input (View Layer)
+                                    │
+                                    ▼
+       ┌────────────────────────────────────────────────────────┐
+       │   OWASP Input Sanitization & Zod Schema Validation    │
+       │   (src/lib/validation/sanitize.ts & schemas.ts)        │
+       └────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+       ┌────────────────────────────────────────────────────────┐
+       │    Unidirectional Zustand Store with JSON Storage      │
+       │    (src/store/finance-store.ts - partialize filtered)  │
+       └────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+       ┌────────────────────────────────────────────────────────┐
+       │   Pure TypeScript Financial Calculation Engine         │
+       │   (src/lib/finance/calculations.ts - Zero React Deps)  │
+       │   • Integer-Paise Math                                 │
+       │   • Reserved Commitments Calculation                   │
+       │   • Dynamic Safe Daily Allowance                       │
+       │   • 30-Day Forward Trajectory Projection               │
+       │   • Deterministic Health Score (0-100) & Risk Tiers    │
+       │   • Non-Mutating Decision Simulation Preview           │
+       └────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+       ┌────────────────────────────────────────────────────────┐
+       │   Responsive Multi-Viewport Presentation Layer         │
+       │   • Desktop (>=1024px): 3-Column Asymmetric Dashboard  │
+       │   • Tablet (768px-1023px): 2-Column Responsive Grid    │
+       │   • Mobile (<768px): Single-Column Fluid Bottom Nav    │
+       └────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Deterministic Financial Math & Formulas
+
+All calculations reside in [`src/lib/finance/calculations.ts`](src/lib/finance/calculations.ts):
+
+### 1. Integer-Paise Arithmetic
+$$\text{paise} = \text{round}(\text{INR} \times 100)$$
+Eliminates binary floating-point inaccuracy ($0.1 + 0.2 \neq 0.3$) across all currency operations.
+
+### 2. Reserved Commitments Formula
+$$\text{Reserved} = \sum_{\substack{c \in \text{commitments} \\ c.\text{dueDay} \ge \text{currentDay} \\ c.\text{status} = \text{upcoming}}} c.\text{amount} + \sum_{\substack{s \in \text{subscriptions} \\ s.\text{isActive} \land \neg s.\text{isPaused} \\ s.\text{billingDay} \ge \text{currentDay}}} s.\text{amount}$$
+Upcoming obligations are protected from discretionary spend without prematurely deducting cash until paid.
+
+### 3. Spendable Balance Formula
+$$\text{Spendable Balance} = \max(0, \text{Current Cash} - \text{Reserved Commitments})$$
+
+### 4. Dynamic Safe Daily Allowance Formula
+$$\text{Safe Daily Allowance} = \begin{cases} \lfloor \frac{\text{Spendable Balance}}{\text{Total Days} - \text{Current Day}} \rfloor & \text{if Remaining Days} > 0 \land \text{Spendable Balance} > 0 \\ 0 & \text{otherwise} \end{cases}$$
+Safely recalculates permissible daily discretionary burn based on days remaining in the 30-day simulation.
+
+### 5. Projected Month-End Closing Balance
+$$\text{Projected Closing} = \text{Current Cash} - \text{Reserved Commitments} - (\text{Avg Daily Spend} \times \text{Days Remaining})$$
+
+---
+
+## Financial Health Score & Risk Tier Methodology
+
+### Health Score (0–100 Scale)
+The financial health score starts at 100 and applies deterministic deductions:
+- **-30 pts**: Current cash cannot cover upcoming reserved commitments.
+- **-25 pts**: Projected closing balance is negative (month-end deficit).
+- **-20 pts**: Discretionary buffer ratio $< 10\%$ of available cash.
+- **-15 pts**: Savings goal accumulation is behind expected linear pacing.
+
+### Risk Tier Classification
+- **Low Risk**: Healthy runway, positive month-end trajectory, all bills reserved.
+- **Medium Risk**: Tight liquidity buffer or commitments exceed 50% of remaining cash.
+- **High Risk**: Projected closing balance near zero or daily burn $< ₹200/\text{day}$.
+- **Critical Risk**: Projected closing balance negative or cash cannot cover bills.
+
+---
+
+## Responsive Multi-Viewport Matrix
+
+PaisaPilot is engineered with responsive layouts tested across standard screen dimensions:
+
+| Viewport Tier | Screen Width | Navigation Mechanism | Layout Architecture |
+| :--- | :--- | :--- | :--- |
+| **Mobile** | `320px` to `767px` | Fixed bottom bar (`Sidebar.tsx`) with padded footer clearance | 1-column fluid stacking, horizontal scrolling table, responsive metric cards |
+| **Tablet** | `768px` to `1023px` | Floating desktop rail (`md:flex`) + top header | 2-column balanced grid (Col 1 & 2 side-by-side, Col 3 full-width bottom) |
+| **Desktop** | `1024px` to `1600px+` | Floating desktop rail + horizontal pills + day stepper | 3-column asymmetric layout (Col 1: 4 cols, Col 2: 4 cols, Col 3: 4 cols) |
+
+---
+
+## Feature-to-Requirement Alignment
+
+| Challenge Requirement | Implementation Details | Source Location |
+| :--- | :--- | :--- |
+| **₹10,000 Budget over 30 Days** | Seed baseline initialized at ₹10,000 (1,000,000 paise) across Day 1 to 30 | `src/lib/finance/seed-data.ts` |
+| **Interactive Day Stepper** | Stepper in navbar (`Day [ < ] 8 [ > ] / 30`) updates days remaining and dynamic limits | `src/components/layout/Navbar.tsx` |
+| **Non-Double-Counting Commitments** | Upcoming bills reserve allowance without prematurely debiting cash | `src/lib/finance/calculations.ts` |
+| **Decision Simulation Sandbox** | Pre-commitment what-if simulator with 7-metric before/after delta preview | `src/app/simulate/page.tsx` |
+| **Unexpected Shocks Modeling** | Preset scenarios for vehicle repairs (₹1,200) and medical clinic bills (₹1,500) | `src/app/simulate/page.tsx` |
+| **Dedicated Savings Vaults** | Segregated capital reserves with deposit/withdraw controls and pacing rings | `src/app/goals/page.tsx` |
+| **Digital Subscriptions Manager** | Pause/resume toggle immediately recalculates reserved commitments | `src/app/commitments/page.tsx` |
+| **Cashflow Projections** | 30-day balance trajectories and velocity curves with month-end diagnostics | `src/app/insights/page.tsx` |
+
+---
+
+## Route Overview
+
+| Route | Name | Purpose |
+| :--- | :--- | :--- |
+| **`/`** | **Command Center** | 4-pillar overview cards, live balance, daily allowance, 30-day forecast chart, risk diagnostic, category donut, and recent activity. |
+| **`/simulate`** | **Decision Sandbox** | Pre-commitment what-if testing with real-time 7-metric delta comparison and 5 Gen Z presets. |
+| **`/transactions`** | **Ledger** | Filterable, searchable transaction log with category breakdown and quick entry modal. |
+| **`/commitments`** | **Bills & Subscriptions** | Fixed commitments tracker with one-click payment settlement and subscription pause/resume. |
+| **`/goals`** | **Savings Vault** | Segregated savings reserves with pacing progress ring and deposit/withdraw controls. |
+| **`/insights`** | **Cashflow Curves** | Full 30-day forecast curves, daily spending velocity charts, and automated diagnostic advisor. |
+
+---
+
 ## Project Structure
 
 ```
@@ -184,7 +311,7 @@ npx tsc --noEmit
 # Run ESLint linter check (0 warnings, 0 errors)
 npm run lint
 
-# Run automated test suites (73 passing tests)
+# Run automated test suites (85 passing tests across 7 test suites)
 npx vitest run
 
 # Run production build

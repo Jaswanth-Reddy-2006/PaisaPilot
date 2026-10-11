@@ -52,8 +52,8 @@ export function Navbar() {
   const daysRemaining = Math.max(0, totalDays - currentDay);
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-[#E8E8E6]/80 dark:bg-[#050705]/80 backdrop-blur-md px-4 sm:px-6 py-3 transition-colors">
-      <div className="max-w-[1600px] mx-auto flex items-center justify-between gap-4">
+    <header className="sticky top-0 z-40 w-full bg-[#E8E8E6]/80 dark:bg-[#050705]/80 backdrop-blur-md px-3 sm:px-6 py-2.5 sm:py-3 transition-colors">
+      <div className="max-w-[1600px] mx-auto flex items-center justify-between gap-2 sm:gap-4">
         {/* Left: Brand Wordmark with Leaf/Wallet Mark */}
         <div className="flex items-center gap-3">
           <Link href="/" className="focus-visible:ring-2 focus-visible:ring-[#073B2F] rounded-full">
@@ -86,9 +86,9 @@ export function Navbar() {
         </nav>
 
         {/* Right: Simulation Day Stepper, Search, Theme Toggle, Reset, Profile */}
-        <div className="flex items-center gap-2 sm:gap-2.5">
+        <div className="flex items-center gap-1.5 sm:gap-2.5">
           {/* 30-Day Simulation Stepper Pill */}
-          <div className="flex items-center gap-1.5 bg-white dark:bg-[#0E120F] px-2.5 py-1 rounded-full border border-[#E5E8E3] shadow-xs text-xs font-mono">
+          <div className="flex items-center gap-1 sm:gap-1.5 bg-white dark:bg-[#0E120F] px-2 sm:px-2.5 py-1 rounded-full border border-[#E5E8E3] shadow-xs text-[11px] sm:text-xs font-mono">
             <button
               onClick={() => setCurrentDay(Math.max(1, currentDay - 1))}
               disabled={currentDay <= 1}
@@ -97,7 +97,7 @@ export function Navbar() {
             >
               <ChevronLeft className="w-3.5 h-3.5" />
             </button>
-            <span className="font-bold text-[#14251F] px-1">
+            <span className="font-bold text-[#14251F] px-0.5 sm:px-1">
               Day {currentDay} <span className="text-[#A0A6A0] font-normal">/ {totalDays}</span>
             </span>
             <button
@@ -119,6 +119,7 @@ export function Navbar() {
             <input
               type="text"
               placeholder="Search anything"
+              aria-label="Search across dashboard"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-28 bg-transparent text-[#14251F] placeholder:text-[#A0A6A0] text-xs focus:outline-none"

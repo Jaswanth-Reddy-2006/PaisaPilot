@@ -121,7 +121,7 @@ export default function InsightsPage() {
             </div>
           </div>
 
-          <div className="flex items-center gap-4 text-xs font-mono font-bold">
+          <div className="flex flex-wrap items-center gap-2.5 sm:gap-4 text-xs font-mono font-bold">
             <div className="flex items-center gap-1.5">
               <span className="w-2.5 h-2.5 rounded-full bg-[#073B2F]" />
               <span className="text-[#14251F]">Actual</span>

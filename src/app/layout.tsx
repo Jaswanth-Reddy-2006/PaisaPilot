@@ -102,8 +102,7 @@ export default function RootLayout({
             <Sidebar />
             <main
               id="main-content"
-              tabIndex={-1}
-              className="flex-1 w-full md:pl-24 md:pr-6 pb-20 md:pb-10 pt-2 transition-all outline-none"
+              className="flex-1 w-full md:pl-24 md:pr-6 pb-24 md:pb-10 pt-2 transition-all outline-none"
             >
               <div className="max-w-[1600px] mx-auto px-4 sm:px-6">
                 {children}
@@ -112,7 +111,7 @@ export default function RootLayout({
           </div>
           <footer
             role="contentinfo"
-            className="w-full border-t border-[#E5E8E3] dark:border-[#1F2821] py-4 px-6 md:pl-28 text-xs text-[#7B827E] dark:text-[#8FA095] flex flex-col sm:flex-row items-center justify-between gap-2 max-w-[1600px] mx-auto"
+            className="w-full border-t border-[#E5E8E3] dark:border-[#1F2821] py-4 px-4 sm:px-6 md:pl-28 pb-24 md:pb-4 text-xs text-[#7B827E] dark:text-[#8FA095] flex flex-col sm:flex-row items-center justify-between gap-2 max-w-[1600px] mx-auto text-center sm:text-left"
           >
             <p>
               PaisaPilot • Broke But Functional — Survive the Month • ₹10,000 / 30-Day Budget Simulator

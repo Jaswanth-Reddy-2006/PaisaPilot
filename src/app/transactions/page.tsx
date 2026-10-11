@@ -175,6 +175,7 @@ export default function TransactionsPage() {
           <input
             type="text"
             placeholder="Search transactions..."
+            aria-label="Search transactions"
             value={search}
             onChange={e => setSearch(e.target.value)}
             className="w-full bg-white dark:bg-[#0C1220] border border-[#E5E8E3] rounded-full pl-9 pr-4 py-1.5 text-xs text-[#14251F] placeholder:text-[#A0A6A0] focus:outline-none focus:border-[#073B2F]"
@@ -309,10 +310,11 @@ export default function TransactionsPage() {
               </div>
 
               <div>
-                <label className="text-xs font-semibold text-[#14251F] block mb-1">
+                <label htmlFor="tx-amount" className="text-xs font-semibold text-[#14251F] block mb-1">
                   Amount in Rupees (₹)
                 </label>
                 <input
+                  id="tx-amount"
                   type="number"
                   step="1"
                   min="1"
@@ -326,10 +328,11 @@ export default function TransactionsPage() {
               </div>
 
               <div>
-                <label className="text-xs font-semibold text-[#14251F] block mb-1">
+                <label htmlFor="tx-description" className="text-xs font-semibold text-[#14251F] block mb-1">
                   Description
                 </label>
                 <input
+                  id="tx-description"
                   type="text"
                   required
                   placeholder="e.g. Zomato dinner"
@@ -341,10 +344,12 @@ export default function TransactionsPage() {
 
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="text-xs font-semibold text-[#14251F] block mb-1">
+                  <label htmlFor="tx-category" className="text-xs font-semibold text-[#14251F] block mb-1">
                     Category
                   </label>
                   <select
+                    id="tx-category"
+                    aria-label="Transaction category"
                     value={form.category}
                     onChange={e => setForm(f => ({ ...f, category: e.target.value as TransactionCategory }))}
                     className="w-full px-3 py-2 rounded-xl border border-[#E5E8E3] bg-[#F4F5F3] text-xs font-medium text-[#14251F] focus:bg-white focus:outline-none focus:border-[#073B2F]"
@@ -358,10 +363,11 @@ export default function TransactionsPage() {
                 </div>
 
                 <div>
-                  <label className="text-xs font-semibold text-[#14251F] block mb-1">
+                  <label htmlFor="tx-day" className="text-xs font-semibold text-[#14251F] block mb-1">
                     Simulation Day (1-30)
                   </label>
                   <input
+                    id="tx-day"
                     type="number"
                     min="1"
                     max="30"

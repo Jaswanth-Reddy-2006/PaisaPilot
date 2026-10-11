@@ -265,10 +265,11 @@ export default function GoalsPage() {
 
             <form onSubmit={handleTransfer} className="space-y-3.5">
               <div>
-                <label className="text-xs font-semibold text-[#14251F] block mb-1">
+                <label htmlFor="transfer-amount" className="text-xs font-semibold text-[#14251F] block mb-1">
                   Amount (₹)
                 </label>
                 <input
+                  id="transfer-amount"
                   type="number"
                   min="1"
                   required
@@ -320,8 +321,9 @@ export default function GoalsPage() {
 
             <form onSubmit={addGoal} className="space-y-3.5">
               <div>
-                <label className="text-xs font-semibold text-[#14251F] block mb-1">Goal Name</label>
+                <label htmlFor="goal-name" className="text-xs font-semibold text-[#14251F] block mb-1">Goal Name</label>
                 <input
+                  id="goal-name"
                   type="text"
                   required
                   placeholder="e.g. New Smartphone"
@@ -333,8 +335,9 @@ export default function GoalsPage() {
 
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="text-xs font-semibold text-[#14251F] block mb-1">Target Amount (₹)</label>
+                  <label htmlFor="goal-target" className="text-xs font-semibold text-[#14251F] block mb-1">Target Amount (₹)</label>
                   <input
+                    id="goal-target"
                     type="number"
                     min="1"
                     required
@@ -346,8 +349,9 @@ export default function GoalsPage() {
                 </div>
 
                 <div>
-                  <label className="text-xs font-semibold text-[#14251F] block mb-1">Initial Deposit (₹)</label>
+                  <label htmlFor="goal-initial" className="text-xs font-semibold text-[#14251F] block mb-1">Initial Deposit (₹)</label>
                   <input
+                    id="goal-initial"
                     type="number"
                     min="0"
                     placeholder="0"
@@ -359,8 +363,9 @@ export default function GoalsPage() {
               </div>
 
               <div>
-                <label className="text-xs font-semibold text-[#14251F] block mb-1">Target Day (1-30)</label>
+                <label htmlFor="goal-target-day" className="text-xs font-semibold text-[#14251F] block mb-1">Target Day (1-30)</label>
                 <input
+                  id="goal-target-day"
                   type="number"
                   min="1"
                   max="30"
@@ -371,8 +376,9 @@ export default function GoalsPage() {
               </div>
 
               <div>
-                <label className="text-xs font-semibold text-[#14251F] block mb-1">Description (Optional)</label>
+                <label htmlFor="goal-desc" className="text-xs font-semibold text-[#14251F] block mb-1">Description (Optional)</label>
                 <input
+                  id="goal-desc"
                   type="text"
                   placeholder="e.g. Save for sale discount"
                   value={form.description}

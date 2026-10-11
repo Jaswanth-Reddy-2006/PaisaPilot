@@ -227,6 +227,21 @@ export const useFinanceStore = create<FinanceStore>()(
         }
         return localStorage;
       }),
+      partialize: (state) => ({
+        initialBudget: state.initialBudget,
+        currentDay: state.currentDay,
+        totalDays: state.totalDays,
+        currentCash: state.currentCash,
+        totalIncome: state.totalIncome,
+        totalSpent: state.totalSpent,
+        transactions: state.transactions,
+        commitments: state.commitments,
+        subscriptions: state.subscriptions,
+        savingsGoals: state.savingsGoals,
+        decisions: state.decisions,
+        userName: state.userName,
+        isDemoMode: state.isDemoMode,
+      }),
     }
   )
 );

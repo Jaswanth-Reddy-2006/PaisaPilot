@@ -8,11 +8,7 @@ import {
   rupeesToPaise,
   calculateMetrics,
   calculateForecast,
-  calculateSpendableBalance,
-  calculateSafeDailyAllowance,
-  calculateProjectedClosingBalance,
-  calculateRiskLevel,
-  calculateHealthScore,
+  simulateDecision,
   generateInsights,
 } from '@/lib/finance/calculations';
 import { sanitizeText } from '@/lib/validation/sanitize';
@@ -97,65 +93,55 @@ export default function DashboardPage() {
   const [simDescription, setSimDescription] = useState<string>('Wireless Headphones');
   const [simFeedback, setSimFeedback] = useState<{ applied?: boolean; discarded?: boolean } | null>(null);
 
-  // Computed Simulation Delta Preview
+  // Computed Simulation Delta Preview using canonical financial engine
   const simPreview = useMemo(() => {
     const amountNum = parseFloat(simAmountRupees) || 0;
     const amountPaise = rupeesToPaise(amountNum);
     if (amountPaise <= 0) return null;
 
-    const currentCash = metrics.currentCash;
-    const isIncome = simType === 'income';
-    const simulatedCash = isIncome ? currentCash + amountPaise : currentCash - amountPaise;
+    const currentState = {
+      initialBudget: store.initialBudget,
+      currentDay: store.currentDay,
+      totalDays: store.totalDays,
+      currentCash: store.currentCash,
+      totalIncome: store.totalIncome,
+      totalSpent: store.totalSpent,
+      transactions: store.transactions,
+      commitments: store.commitments,
+      subscriptions: store.subscriptions,
+      savingsGoals: store.savingsGoals,
+      decisions: store.decisions,
+      userName: store.userName,
+      isDemoMode: store.isDemoMode,
+    };
 
-    const simulatedSpendable = calculateSpendableBalance(
-      simulatedCash,
-      metrics.reservedCommitments,
-      store.savingsGoals
-    );
-
-    const simulatedDaily = calculateSafeDailyAllowance(
-      simulatedSpendable,
-      metrics.daysRemaining
-    );
-
-    const simulatedClosing = isIncome
-      ? metrics.projectedClosingBalance + amountPaise
-      : metrics.projectedClosingBalance - amountPaise;
-
-    const { level: simulatedRisk } = calculateRiskLevel(
-      simulatedClosing,
-      metrics.reservedCommitments,
-      simulatedCash,
-      metrics.daysRemaining
-    );
-
-    const { score: simulatedHealth } = calculateHealthScore(
-      simulatedClosing,
-      metrics.reservedCommitments,
-      simulatedCash,
-      store.savingsGoals,
-      metrics.daysRemaining,
-      store.totalDays
-    );
+    const res = simulateDecision(currentState, {
+      type: simType,
+      amount: amountPaise,
+      description: simDescription || 'Hypothetical Decision',
+      category: simCategory,
+    });
 
     return {
       amountPaise,
-      currentCash,
-      simulatedCash,
-      cashDelta: simulatedCash - currentCash,
-      currentDaily: metrics.safeDailyAllowance,
-      simulatedDaily,
-      dailyDelta: simulatedDaily - metrics.safeDailyAllowance,
-      currentClosing: metrics.projectedClosingBalance,
-      simulatedClosing,
-      closingDelta: simulatedClosing - metrics.projectedClosingBalance,
-      currentRisk: metrics.riskLevel,
-      simulatedRisk,
-      currentHealth: metrics.healthScore,
-      simulatedHealth,
-      healthDelta: simulatedHealth - metrics.healthScore,
+      currentCash: res.current.currentCash,
+      simulatedCash: res.simulated.currentCash,
+      cashDelta: res.deltas.balance,
+      currentDaily: res.current.safeDailyAllowance,
+      simulatedDaily: res.simulated.safeDailyAllowance,
+      dailyDelta: res.deltas.dailyAllowance,
+      currentClosing: res.current.projectedClosingBalance,
+      simulatedClosing: res.simulated.projectedClosingBalance,
+      closingDelta: res.deltas.closingBalance,
+      currentRisk: res.current.riskLevel,
+      simulatedRisk: res.simulated.riskLevel,
+      currentHealth: res.current.healthScore,
+      simulatedHealth: res.simulated.healthScore,
+      healthDelta: res.deltas.healthScore,
+      warnings: res.warnings,
+      insights: res.insights,
     };
-  }, [simAmountRupees, simType, metrics, store.savingsGoals, store.totalDays]);
+  }, [simAmountRupees, simType, simCategory, simDescription, store]);
 
   // Close modal on Escape key
   useEffect(() => {
@@ -269,12 +255,12 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6 pb-12">
       {/* ─── Reference Asymmetric Multi-Column Dashboard Layout ──────────────── */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6 items-start">
         
         {/* ═════════════════════════════════════════════════════════════════════
             COLUMN 1: Welcome & Balance Card + 30-Day Forecast (3.8 of 12 cols)
             ═════════════════════════════════════════════════════════════════════ */}
-        <div className="lg:col-span-4 space-y-6">
+        <div className="md:col-span-1 lg:col-span-4 space-y-6">
           
           {/* Card A: Welcome & Balance Card (Reference screenshot exact styling) */}
           <div className="bg-white rounded-[26px] p-6 border border-[#E5E8E3] shadow-[0_2px_12px_rgba(20,37,31,0.04)] relative overflow-hidden">
@@ -294,7 +280,7 @@ export default function DashboardPage() {
               <div className="text-[11px] text-[#7B827E] font-semibold tracking-wide uppercase">
                 Available Liquid Cash
               </div>
-              <div className="text-4xl sm:text-[42px] font-black font-mono tracking-tight text-[#14251F] mt-0.5 leading-none">
+              <div className="text-3xl sm:text-4xl lg:text-[42px] font-black font-mono tracking-tight text-[#14251F] mt-0.5 leading-none">
                 {formatINR(metrics.currentCash)}
               </div>
               <div className="text-xs text-[#7B827E] mt-2 font-medium flex items-center gap-1.5">
@@ -450,7 +436,7 @@ export default function DashboardPage() {
         {/* ═════════════════════════════════════════════════════════════════════
             COLUMN 2: 4 Summary Cards + Financial Health & Donut (3.8 of 12 cols)
             ═════════════════════════════════════════════════════════════════════ */}
-        <div className="lg:col-span-4 space-y-6">
+        <div className="md:col-span-1 lg:col-span-4 space-y-6">
           
           {/* Card B: Four Financial Summary Cards in a 2x2 Grid (Reference screenshot) */}
           <div className="grid grid-cols-2 gap-3.5">
@@ -590,7 +576,7 @@ export default function DashboardPage() {
         {/* ═════════════════════════════════════════════════════════════════════
             COLUMN 3: Signature Simulator + Commitments + Transactions (4.4 cols)
             ═════════════════════════════════════════════════════════════════════ */}
-        <div className="lg:col-span-4 space-y-6">
+        <div className="md:col-span-2 lg:col-span-4 space-y-6">
           
           {/* Card H: What If You Spend It? — Decision Simulator Preview Sandbox */}
           <div className="bg-white rounded-[26px] p-6 border border-[#E5E8E3] shadow-[0_2px_12px_rgba(20,37,31,0.04)] space-y-4">
@@ -637,15 +623,17 @@ export default function DashboardPage() {
             <div className="space-y-2.5 pt-1">
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="text-[10px] font-bold text-[#7B827E] uppercase block mb-1">
+                  <label htmlFor="sim-amount" className="text-[10px] font-bold text-[#7B827E] uppercase block mb-1">
                     Amount (₹)
                   </label>
                   <div className="relative">
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-mono font-bold text-[#7B827E]">₹</span>
                     <input
+                      id="sim-amount"
                       type="number"
                       min="1"
                       placeholder="e.g. 2000"
+                      aria-label="Simulation amount in rupees"
                       value={simAmountRupees}
                       onChange={(e) => setSimAmountRupees(e.target.value)}
                       className="w-full pl-7 pr-3 py-2 rounded-xl border border-[#E5E8E3] bg-[#F4F5F3] text-xs font-mono font-bold text-[#14251F] focus:bg-white focus:outline-none focus:border-[#073B2F]"
@@ -654,10 +642,12 @@ export default function DashboardPage() {
                 </div>
 
                 <div>
-                  <label className="text-[10px] font-bold text-[#7B827E] uppercase block mb-1">
+                  <label htmlFor="sim-category" className="text-[10px] font-bold text-[#7B827E] uppercase block mb-1">
                     Category
                   </label>
                   <select
+                    id="sim-category"
+                    aria-label="Simulation transaction category"
                     value={simCategory}
                     onChange={(e) => setSimCategory(e.target.value as TransactionCategory)}
                     className="w-full px-2.5 py-2 rounded-xl border border-[#E5E8E3] bg-[#F4F5F3] text-xs font-medium text-[#14251F] focus:bg-white focus:outline-none focus:border-[#073B2F]"
@@ -674,8 +664,10 @@ export default function DashboardPage() {
 
               <div>
                 <input
+                  id="sim-desc"
                   type="text"
                   placeholder="What are you considering buying?"
+                  aria-label="Item description to simulate"
                   value={simDescription}
                   onChange={(e) => setSimDescription(e.target.value)}
                   className="w-full px-3 py-2 rounded-xl border border-[#E5E8E3] bg-[#F4F5F3] text-xs text-[#14251F] focus:bg-white focus:outline-none focus:border-[#073B2F]"

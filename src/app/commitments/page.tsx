@@ -321,8 +321,9 @@ export default function CommitmentsPage() {
 
             <form onSubmit={addCommitment} className="space-y-3.5">
               <div>
-                <label className="text-xs font-semibold text-[#14251F] block mb-1">Bill Name</label>
+                <label htmlFor="bill-name" className="text-xs font-semibold text-[#14251F] block mb-1">Bill Name</label>
                 <input
+                  id="bill-name"
                   type="text"
                   required
                   placeholder="e.g. WiFi Bill"
@@ -333,8 +334,9 @@ export default function CommitmentsPage() {
               </div>
 
               <div>
-                <label className="text-xs font-semibold text-[#14251F] block mb-1">Amount (₹)</label>
+                <label htmlFor="bill-amount" className="text-xs font-semibold text-[#14251F] block mb-1">Amount (₹)</label>
                 <input
+                  id="bill-amount"
                   type="number"
                   required
                   min="1"
@@ -347,8 +349,10 @@ export default function CommitmentsPage() {
 
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="text-xs font-semibold text-[#14251F] block mb-1">Category</label>
+                  <label htmlFor="bill-category" className="text-xs font-semibold text-[#14251F] block mb-1">Category</label>
                   <select
+                    id="bill-category"
+                    aria-label="Bill category"
                     value={commitForm.category}
                     onChange={e => setCommitForm(f => ({ ...f, category: e.target.value as TransactionCategory }))}
                     className="w-full px-3 py-2 rounded-xl border border-[#E5E8E3] bg-[#F4F5F3] text-xs font-medium text-[#14251F] focus:bg-white focus:outline-none focus:border-[#073B2F]"
@@ -360,8 +364,9 @@ export default function CommitmentsPage() {
                 </div>
 
                 <div>
-                  <label className="text-xs font-semibold text-[#14251F] block mb-1">Due Day (1-30)</label>
+                  <label htmlFor="bill-due-day" className="text-xs font-semibold text-[#14251F] block mb-1">Due Day (1-30)</label>
                   <input
+                    id="bill-due-day"
                     type="number"
                     min="1"
                     max="30"
@@ -413,8 +418,9 @@ export default function CommitmentsPage() {
 
             <form onSubmit={addSubscription} className="space-y-3.5">
               <div>
-                <label className="text-xs font-semibold text-[#14251F] block mb-1">Service Name</label>
+                <label htmlFor="sub-name" className="text-xs font-semibold text-[#14251F] block mb-1">Service Name</label>
                 <input
+                  id="sub-name"
                   type="text"
                   required
                   placeholder="e.g. YouTube Premium"
@@ -425,8 +431,9 @@ export default function CommitmentsPage() {
               </div>
 
               <div>
-                <label className="text-xs font-semibold text-[#14251F] block mb-1">Monthly Cost (₹)</label>
+                <label htmlFor="sub-cost" className="text-xs font-semibold text-[#14251F] block mb-1">Monthly Cost (₹)</label>
                 <input
+                  id="sub-cost"
                   type="number"
                   required
                   min="1"
@@ -438,8 +445,9 @@ export default function CommitmentsPage() {
               </div>
 
               <div>
-                <label className="text-xs font-semibold text-[#14251F] block mb-1">Billing Day (1-30)</label>
+                <label htmlFor="sub-billing-day" className="text-xs font-semibold text-[#14251F] block mb-1">Billing Day (1-30)</label>
                 <input
+                  id="sub-billing-day"
                   type="number"
                   min="1"
                   max="30"

@@ -70,19 +70,19 @@ export function MetricCard({
   return (
     <div
       className={cn(
-        'rounded-[20px] p-5 border transition-all duration-200 relative overflow-hidden group hover:translate-y-[-1px] hover:shadow-md',
+        'rounded-[20px] p-3.5 sm:p-5 border transition-all duration-200 relative overflow-hidden group hover:translate-y-[-1px] hover:shadow-md',
         variantStyles[variant],
         className
       )}
     >
-      <div className="flex items-center justify-between mb-2.5">
+      <div className="flex items-center justify-between mb-2 sm:mb-2.5">
         <span className={cn('text-xs tracking-tight font-medium', titleColors[variant])}>
           {title}
         </span>
         {icon && (
           <div
             className={cn(
-              'p-2 rounded-xl transition-colors',
+              'p-1.5 sm:p-2 rounded-xl transition-colors',
               variant === 'lime'
                 ? 'bg-[#073B2F]/10 text-[#073B2F]'
                 : variant === 'forest'
@@ -95,13 +95,13 @@ export function MetricCard({
         )}
       </div>
 
-      <div className={cn('text-2xl sm:text-3xl font-extrabold font-mono tracking-tight mb-1', valueColors[variant])}>
+      <div className={cn('text-xl sm:text-2xl lg:text-3xl font-extrabold font-mono tracking-tight mb-1 truncate', valueColors[variant])}>
         {value}
       </div>
 
       <div
         className={cn(
-          'flex items-center justify-between mt-3 pt-2.5 border-t text-xs',
+          'flex items-center justify-between mt-2.5 sm:mt-3 pt-2 sm:pt-2.5 border-t text-xs',
           variant === 'lime'
             ? 'border-[#073B2F]/15'
             : variant === 'forest'
@@ -110,7 +110,7 @@ export function MetricCard({
         )}
       >
         {subtitle && (
-          <span className={cn('truncate max-w-[180px]', subtitleColors[variant])}>
+          <span className={cn('truncate max-w-[110px] sm:max-w-[180px]', subtitleColors[variant])}>
             {subtitle}
           </span>
         )}

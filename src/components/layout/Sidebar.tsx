@@ -118,7 +118,7 @@ export function Sidebar() {
 
       {/* Mobile Responsive Bottom Navigation Bar */}
       <nav
-        className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/95 dark:bg-[#0E120F]/95 backdrop-blur-md border-t border-[#E5E8E3] py-2 px-4 flex items-center justify-around shadow-lg"
+        className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/95 dark:bg-[#0E120F]/95 backdrop-blur-md border-t border-[#E5E8E3] py-2 px-1 sm:px-4 flex items-center justify-around shadow-lg"
         aria-label="Mobile Navigation"
       >
         {navItems.map(({ href, label, icon: Icon }) => {
@@ -128,7 +128,7 @@ export function Sidebar() {
               key={href}
               href={href}
               className={cn(
-                'flex flex-col items-center justify-center py-1 px-2.5 rounded-xl text-[10px] font-medium transition-all',
+                'flex flex-col items-center justify-center py-1 px-1 sm:px-2 rounded-xl text-[10px] font-medium transition-all',
                 isActive
                   ? 'text-[#073B2F] dark:text-[#A4E763] font-bold'
                   : 'text-[#7B827E] hover:text-[#14251F]'
