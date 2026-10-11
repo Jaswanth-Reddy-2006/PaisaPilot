@@ -61,7 +61,7 @@ Please adhere to these guidelines to maintain architectural integrity:
 Before submitting changes, ensure all tests and linters pass:
 
 ```bash
-# Run Vitest unit & integration test suite (58 tests)
+# Run Vitest unit & integration test suite (85 tests)
 npm test
 
 # Run ESLint validation
